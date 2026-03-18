@@ -2,6 +2,11 @@ package com.taller.patrones.infrastructure.combat;
 
 import com.taller.patrones.domain.Attack;
 import com.taller.patrones.domain.Character;
+import com.taller.patrones.infrastructure.factory.*;
+import com.taller.patrones.infrastructure.strategies.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Motor de combate. Calcula daño y crea ataques.
@@ -9,22 +14,36 @@ import com.taller.patrones.domain.Character;
  * Nota: Esta clase crece cada vez que añadimos un ataque nuevo o un tipo de daño distinto.
  */
 public class CombatEngine {
+    private final Map<String, AttackFactory> factories = new HashMap<>();//mapa para evitar el switch
+    private final Map<Attack.AttackType, DamageStrategy>strategies = new HashMap<>();
 
+
+    public CombatEngine() {
+        factories.put("TACKLE", new TackleAttackFactory());
+        factories.put("SLASH", new SlashAttackFactory());
+        factories.put("FIREBALL", new FireBallAttackFactory());
+        factories.put("ICE_BEAM", new IceBeamAttackFactory());
+        factories.put("POISON_STING", new PoisonStingAttackFactory());
+        factories.put("THUNDER", new ThunderAttackFactory());
+        factories.put("METEORO", new MeteoroAttackFactory());
+        strategies.put(Attack.AttackType.NORMAL, new NormalDamageStrategy());
+        strategies.put(Attack.AttackType.SPECIAL, new SpecialDamageStrategy());
+        strategies.put(Attack.AttackType.STATUS, new StatusDamageStrategy());
+        strategies.put(Attack.AttackType.CRITICAL, new CriticalDamageStrategy());
+
+    };
     /**
      * Crea un ataque a partir de su nombre.
      * Cada ataque nuevo requiere modificar este método.
      */
     public Attack createAttack(String name) {
         String n = name != null ? name.toUpperCase() : "";
-        return switch (n) {
-            case "TACKLE" -> new Attack("Tackle", 40, Attack.AttackType.NORMAL);
-            case "SLASH" -> new Attack("Slash", 55, Attack.AttackType.NORMAL);
-            case "FIREBALL" -> new Attack("Fireball", 80, Attack.AttackType.SPECIAL);
-            case "ICE_BEAM" -> new Attack("Ice Beam", 70, Attack.AttackType.SPECIAL);
-            case "POISON_STING" -> new Attack("Poison Sting", 20, Attack.AttackType.STATUS);
-            case "THUNDER" -> new Attack("Thunder", 90, Attack.AttackType.SPECIAL);
-            default -> new Attack("Golpe", 30, Attack.AttackType.NORMAL);
-        };
+        AttackFactory factory = factories.get(n);
+        if(factory!= null){
+            return  factory.createAttack();
+        }
+        factory = new GolpeAttackFactory();//Caso por defecto
+        return factory.createAttack();
     }
 
     /**
@@ -32,18 +51,14 @@ public class CombatEngine {
      * Cada fórmula nueva (ej. crítico, veneno con tiempo) requiere modificar este switch.
      */
     public int calculateDamage(Character attacker, Character defender, Attack attack) {
-        return switch (attack.getType()) {
-            case NORMAL -> {
-                int raw = attacker.getAttack() * attack.getBasePower() / 100;
-                yield Math.max(1, raw - defender.getDefense());
-            }
-            case SPECIAL -> {
-                int raw = attacker.getAttack() * attack.getBasePower() / 100;
-                int effectiveDef = defender.getDefense() / 2;
-                yield Math.max(1, raw - effectiveDef);
-            }
-            case STATUS -> attacker.getAttack(); // Los de estado no hacen daño directo... ¿o sí?
-            default -> 0;
-        };
+        DamageStrategy strategy = strategies.get(attack.getType());
+
+        if (strategy != null) {
+            return strategy.calculateDamage(attacker, defender, attack);
+        }else{
+            return 0;
+        }
+
+
     }
 }

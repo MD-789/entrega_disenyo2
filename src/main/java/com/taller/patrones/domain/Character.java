@@ -1,5 +1,7 @@
 package com.taller.patrones.domain;
 
+
+
 /**
  * Representa un personaje en combate.
  */
@@ -11,14 +13,93 @@ public class Character {
     private final int attack;
     private final int defense;
     private final int speed;
+    private final String equipamiento;
+    private boolean bufado;
+    private ClaseType clase;
 
-    public Character(String name, int maxHp, int attack, int defense, int speed) {
-        this.name = name;
-        this.maxHp = maxHp;
-        this.currentHp = maxHp;
-        this.attack = attack;
-        this.defense = defense;
-        this.speed = speed;
+
+    private Character(Builder builder) {
+        this.name = builder.name;
+        this.maxHp = builder.maxHp;
+        this.currentHp = builder.currentHp != null ? builder.currentHp : builder.maxHp;
+        this.attack = builder.attack;
+        this.defense = builder.defense;
+        this.speed = builder.speed;
+        this.equipamiento = builder.equipamiento;
+        this.bufado = builder.bufado;
+        this.clase = builder.clase;
+
+    }
+
+    public static class Builder {
+
+        private String name;
+        private Integer currentHp; // opcional
+        private int maxHp;
+        private int attack;
+        private int defense;
+        private int speed;
+        private String equipamiento;
+        private boolean bufado;
+        private ClaseType clase;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder maxHp(int maxHp) {
+            this.maxHp = maxHp;
+            return this;
+        }
+
+        public Builder currentHp(int currentHp) {
+            this.currentHp = currentHp;
+            return this;
+        }
+
+        public Builder attack(int attack) {
+            this.attack = attack;
+            return this;
+        }
+
+        public Builder defense(int defense) {
+            this.defense = defense;
+            return this;
+        }
+
+        public Builder speed(int speed) {
+            this.speed = speed;
+            return this;
+        }
+
+        public Builder equipamiento(String equipamiento){
+            this.equipamiento = equipamiento;
+            return this;
+        }
+
+        public Builder bufado(boolean bufado){
+            this.bufado = bufado;
+            return this;
+        }
+
+        public Builder clase(ClaseType clase){
+            this.clase = clase;
+            return this;
+        }
+
+        public Character build() {
+
+            // Validaciones mínimas
+            if (name == null || name.isBlank()) {
+                throw new IllegalStateException("Name is required");
+            }
+            if (maxHp <= 0) {
+                throw new IllegalStateException("maxHp must be > 0");
+            }
+
+            return new Character(this);
+        }
     }
 
     public String getName() { return name; }
@@ -27,6 +108,9 @@ public class Character {
     public int getAttack() { return attack; }
     public int getDefense() { return defense; }
     public int getSpeed() { return speed; }
+    public String getEquipamiento() {return equipamiento;}
+    public boolean isBufado() {return bufado;}
+    public ClaseType getClase() {return clase;}
 
     public void takeDamage(int damage) {
         this.currentHp = Math.max(0, currentHp - damage);
@@ -38,5 +122,9 @@ public class Character {
 
     public double getHpPercentage() {
         return maxHp > 0 ? (double) currentHp / maxHp * 100 : 0;
+    }
+
+    public enum ClaseType {
+        GUERRERO,MAGO
     }
 }

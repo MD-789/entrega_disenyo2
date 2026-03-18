@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * también creara su propio BattleRepository, ¿compartirían las batallas?
  */
 public class BattleRepository {
+    private static  BattleRepository instance;
 
     private static final Map<String, Battle> battles = new ConcurrentHashMap<>();
 
@@ -25,5 +26,12 @@ public class BattleRepository {
 
     public void remove(String id) {
         battles.remove(id);
+    }
+
+    public static BattleRepository getInstance(){
+        if (instance == null ){
+            instance = new BattleRepository();
+        }
+        return instance;
     }
 }

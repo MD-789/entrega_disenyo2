@@ -1,5 +1,6 @@
 package com.taller.patrones.interfaces.rest;
 
+import com.taller.patrones.adapter.ExternalBattleAdapter;
 import com.taller.patrones.application.BattleService;
 import com.taller.patrones.domain.Battle;
 import com.taller.patrones.domain.Character;
@@ -15,6 +16,7 @@ import java.util.Map;
 public class BattleController {
 
     private final BattleService battleService = new BattleService();
+    private final ExternalBattleAdapter adapter = new ExternalBattleAdapter();
 
     @PostMapping("/start")
     public ResponseEntity<Map<String, Object>> startBattle(@RequestBody(required = false) Map<String, String> body) {
@@ -44,18 +46,12 @@ public class BattleController {
      * La conversión se hace aquí, manualmente, en el controller.
      */
     @PostMapping("/start/external")
-    public ResponseEntity<Map<String, Object>> startBattleFromExternal(@RequestBody Map<String, Object> body) {
-        String fighter1Name = (String) body.getOrDefault("fighter1_name", "Héroe");
-        int fighter1Hp = ((Number) body.getOrDefault("fighter1_hp", 150)).intValue();
-        int fighter1Atk = ((Number) body.getOrDefault("fighter1_atk", 25)).intValue();
-        String fighter2Name = (String) body.getOrDefault("fighter2_name", "Dragón");
-        int fighter2Hp = ((Number) body.getOrDefault("fighter2_hp", 120)).intValue();
-        int fighter2Atk = ((Number) body.getOrDefault("fighter2_atk", 30)).intValue();
+    public ResponseEntity<Map<String, Object>> startBattleFromExternal(@RequestBody ExternalBattleRequest body) {
+        Character player = adapter.toPlayer(body);
+        Character enemy = adapter.toEnemy(body);
 
-        var result = battleService.startBattleFromExternal(
-                fighter1Name, fighter1Hp, fighter1Atk,
-                fighter2Name, fighter2Hp, fighter2Atk
-        );
+        var result = battleService.startBattleFromExternal(player.getName(), player.getMaxHp(), player.getAttack(),
+        enemy.getName(),enemy.getMaxHp(),enemy.getAttack());//Si se usa el .starBattle normal se pierden los valores
         Battle battle = result.battle();
 
         return ResponseEntity.ok(Map.of(
