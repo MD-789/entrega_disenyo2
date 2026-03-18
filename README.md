@@ -32,11 +32,11 @@ src/main/java/com/taller/patrones/
 
 **Preguntas:**
 - ¿Qué problema te encuentras al añadir "Meteoro"?
-- Que se debe añadir manualmente al switch
+Que se debe añadir manualmente al switch
 - ¿Qué pasa si mañana piden 10 ataques más?
-- Que hay que añadir 10 case`s en createAttack
+Que hay que añadir 10 case`s en createAttack
 - ¿Qué patrón permitiría añadir ataques **sin modificar** `CombatEngine`?
-- Factory
+Factory
 
 **Pista:** Busca en `infrastructure/combat/CombatEngine.java`
 
@@ -50,9 +50,9 @@ Además, te piden un nuevo tipo: "CRÍTICO", con fórmula `daño * 1.5` y 20% de
 
 **Preguntas:**
 - ¿Qué principio SOLID se viola al añadir otro `case` en el switch?
-- Open/Close
+Open/Close
 - ¿Qué patrón permitiría tener fórmulas de daño intercambiables sin tocar el código existente?
-- Strategy
+Strategy
 **Pista:** Cada tipo de ataque (NORMAL, SPECIAL, STATUS) tiene una fórmula distinta.
 
 ---
@@ -69,11 +69,11 @@ Ahora necesitas soportar: equipamiento, buffos temporales, clase (guerrero/mago)
 
 **Preguntas:**
 - ¿Qué problema tiene un constructor con muchos parámetros?
-- Que con cada parametro opcional hay que añadir constructores que no los tienen en cuenta/no los piden
+Que con cada parametro opcional hay que añadir constructores que no los tienen en cuenta/no los piden
 - ¿Cómo harías para que `new Character(...)` sea legible cuando hay valores por defecto?
-- Comentar que atributps estan por defecto en ese Constructor
+Comentar que atributps estan por defecto en ese Constructor
 - ¿Qué patrón permite construir objetos complejos paso a paso?
-- El patrón Builder
+El patrón Builder
 
 **Pista:** Mira cómo se crean los personajes en `BattleService` y en el endpoint `/start/external`.
 
@@ -85,11 +85,11 @@ Ahora necesitas soportar: equipamiento, buffos temporales, clase (guerrero/mago)
 
 **Preguntas:**
 - ¿Qué pasaría si dos clases crean su propio `BattleRepository` sin el `static`?
-- Que existen 1 BattlerRepository para cada clase
+Que existen 1 BattlerRepository para cada clase
 - ¿Cómo asegurar que **toda la aplicación** use la misma instancia de almacenamiento?
-- Con una "variable global" a la que toda la aplicacion tnega acceso
+Con una "variable global" a la que toda la aplicacion tnega acceso
 - ¿Qué patrón garantiza una única instancia de una clase?
-- Singleton
+Singleton
 
 **Pista:** `infrastructure/persistence/BattleRepository.java`
 
@@ -103,11 +103,11 @@ Mañana llega otro proveedor con formato distinto: `player.health`, `player.atta
 
 **Preguntas:**
 - ¿Qué problema hay en poner la lógica de conversión en el controller?
-- Que eso NO es responsabilidad del controller, viola (S)ingle Responsability de los SOLID
+Que eso NO es responsabilidad del controller, viola (S)ingle Responsability de los SOLID
 - ¿Cómo aislar la conversión "formato externo → nuestro dominio" para no ensuciar el controller?
-- Poniendolo en una clase cuya responsabilidad sea hacer la conversión
+Poniendolo en una clase cuya responsabilidad sea hacer la conversión
 - ¿Qué patrón permite que un objeto "adaptado" se use como si fuera uno de los nuestros?
-- Adapter
+Adapter
 
 **Pista:** `interfaces/rest/BattleController.java` — método `startBattleFromExternal`
 
@@ -124,9 +124,11 @@ Ahora mismo solo existe `battle.log()`. Tendrías que añadir código en `Battle
 
 **Preguntas:**
 - ¿Qué pasa si añades 5 "suscriptores" más? ¿Cuántas líneas tocarías en `applyDamage()`?
+Una linea por cada suscriptor al que avisar
 - ¿Cómo desacoplar "ejecutar ataque" de "notificar a quien le interese"?
+En ataque solo se notifica a una clase,esa clase avisará al resto
 - ¿Qué patrón permite que varios objetos reaccionen a un evento sin que el emisor los conozca?
-- Observer
+Observer
 
 **Pista:** El método `applyDamage` en `BattleService` es el único que sabe cuándo hay daño.
 
@@ -140,11 +142,11 @@ Ahora el ataque se ejecuta directamente en `applyDamage()`. No hay registro de "
 
 **Preguntas:**
 - ¿Qué tendrías que cambiar para poder "deshacer"?
-- Meter los ataque en un registro
+Meter los ataque en un registro
 - ¿Cómo encapsular una acción (ataque) para poder ejecutarla, guardarla y revertirla?
-- La metemos en una pila
+La metemos en una pila
 - ¿Qué patrón trata las acciones como objetos de primera clase?
-- Command
+Command
 
 **Pista:** La lógica del ataque está en `BattleService.applyDamage()`.
 
@@ -156,9 +158,9 @@ Ahora el ataque se ejecuta directamente en `applyDamage()`. No hay registro de "
 
 **Preguntas:**
 - ¿Qué problema hay en exponer muchos detalles internos a quien solo quiere "hacer un ataque"?
-- Que les puede liar innecesariamente
+Que les puede liar innecesariamente pidiendoles datos que ellos no conocen
 - ¿Qué patrón ofrece una interfaz simple que oculta la complejidad del subsistema?
-- Facade
+Facade
 
 **Pista:** Piensa en qué necesita saber un cliente para ejecutar un ataque.
 
@@ -172,9 +174,9 @@ Ahora cada ataque es independiente. No hay forma de agrupar varios.
 
 **Preguntas:**
 - ¿Cómo representar "un ataque que son varios ataques"?
-- Con una relación de Composición/Agregación(En diagramas de  clases)
+Con una relación de Composición/Agregación(En diagramas de  clases)
 - ¿Qué patrón permite tratar un grupo de objetos igual que un objeto individual?
-- Compsite
+Compsite
 
 **Pista:** `Attack` es una unidad. ¿Cómo hacer que varios `Attack` se comporten como uno?
 
