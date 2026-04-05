@@ -13,7 +13,8 @@ public class Character {
     private final int attack;
     private final int defense;
     private final int speed;
-    private final String equipamiento;
+    private final String equipamiento; //Intenta evitar el spanglish.
+    // Yo intento programar siempre en inglés por costumbre. Elijas lo que elijas, quédate con uno.
     private boolean bufado;
     private ClaseType clase;
 
@@ -29,12 +30,20 @@ public class Character {
         this.bufado = builder.bufado;
         this.clase = builder.clase;
 
+    } //Entiendo tu idea pero es raro, lo suyo es tener un estático que devuelva un builder,
+    // y que ese builder haga un .build devolviendo un Character con los valores que se le hayan
+    // asignado:
+    //https://github.com/AnaGciaSchz/dragon-quest-patrones/blob/solucion-ana/src/main/java/com/taller/patrones/domain/model/Character.java
+
+    public static Builder builder() {
+        return new Builder();
     }
+
 
     public static class Builder {
 
         private String name;
-        private Integer currentHp; // opcional
+        private Integer currentHp; // opcional. Bien visto.
         private int maxHp;
         private int attack;
         private int defense;
@@ -90,7 +99,8 @@ public class Character {
 
         public Character build() {
 
-            // Validaciones mínimas
+            // Validaciones mínimas. Me gustan, aunque habría que añadir alguna más, como que la currentHP no puede ser mayor
+            // que la maxHP. Pero bueno, esta práctica es para lo que es así que se entiende la idea y está bien hecho
             if (name == null || name.isBlank()) {
                 throw new IllegalStateException("Name is required");
             }

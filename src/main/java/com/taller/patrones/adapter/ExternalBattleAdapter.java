@@ -4,6 +4,9 @@ import com.taller.patrones.interfaces.rest.ExternalBattleRequest;
 import org.springframework.stereotype.Component;
 import com.taller.patrones.domain.Character;
 
+/**
+ * Buena clase, limpia  fácil de entender
+ */
 @Component
 public class ExternalBattleAdapter {
 
