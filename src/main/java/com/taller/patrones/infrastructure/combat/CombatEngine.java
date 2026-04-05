@@ -38,7 +38,9 @@ public class CombatEngine {
      */
     public Attack createAttack(String name) {
         String n = name != null ? name.toUpperCase() : "";
-        AttackFactory factory = factories.get(n);
+        AttackFactory factory = factories.get(n); //Muy bien, aunque el mapa se podría subir al BattleService. Ante
+        // la duda, cuanto más cerca de cuando se recibe la información, menos dolor de cabeza da. Si por lo que sea ves
+        // muy claro que tiene que estar en esta clase, entonces todo perfecto.
         if(factory!= null){
             return  factory.createAttack();
         }
@@ -51,12 +53,12 @@ public class CombatEngine {
      * Cada fórmula nueva (ej. crítico, veneno con tiempo) requiere modificar este switch.
      */
     public int calculateDamage(Character attacker, Character defender, Attack attack) {
-        DamageStrategy strategy = strategies.get(attack.getType());
+        DamageStrategy strategy = strategies.get(attack.getType()); // Bien
 
         if (strategy != null) {
             return strategy.calculateDamage(attacker, defender, attack);
         }else{
-            return 0;
+            return 0; //Tiene sentido devolver 0? Igual en este caso nos interesa que salte una excepción
         }
 
 

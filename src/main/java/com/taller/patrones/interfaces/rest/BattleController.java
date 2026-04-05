@@ -48,7 +48,7 @@ public class BattleController {
     @PostMapping("/start/external")
     public ResponseEntity<Map<String, Object>> startBattleFromExternal(@RequestBody ExternalBattleRequest body) {
         Character player = adapter.toPlayer(body);
-        Character enemy = adapter.toEnemy(body);
+        Character enemy = adapter.toEnemy(body); // Bien, me gusta este approach, fácil de entender
 
         var result = battleService.startBattleFromExternal(player.getName(), player.getMaxHp(), player.getAttack(),
         enemy.getName(),enemy.getMaxHp(),enemy.getAttack());//Si se usa el .starBattle normal se pierden los valores

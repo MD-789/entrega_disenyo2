@@ -13,8 +13,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BattleRepository {
     private static  BattleRepository instance;
-
     private static final Map<String, Battle> battles = new ConcurrentHashMap<>();
+
+    private BattleRepository() {
+
+    } //Te ha faltado el constructor privado, si no lo poner privado explícitamente, se siguen pudiendo crear objetos
+    // sin usar tu método getInstance(), así que seguirá pudiendo haber más de una instancia. Cuando quieres hacer
+    //  algo, no confías en que el usuario lo hará bien, por eso tienes que limitarlo y validarlo todo.
 
     public void save(String id, Battle battle) {
         battles.put(id, battle);
@@ -33,5 +38,5 @@ public class BattleRepository {
             instance = new BattleRepository();
         }
         return instance;
-    }
+    } // Bien
 }
